@@ -1,0 +1,3 @@
+scripts/tizen-env.sh
+dist/
+app/.buildResult/

@@ -1,0 +1,6 @@
+# Default owner for everything in the repo.
+*             @poyfather
+
+# The TV-facing app and its build need a TV-side check before merge.
+/app/         @poyfather
+/scripts/     @poyfather

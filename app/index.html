@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=1920, height=1080, user-scalable=no">
+<title>PNW Home</title>
+<!-- Futura PT: Adobe Fonts kit (families futura-pt, futura-pt-bold, futura-pt-condensed). -->
+<link rel="stylesheet" href="https://use.typekit.net/dpx5kta.css">
+<!-- Baumans: Google Fonts. Accent line only. -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baumans&display=swap">
+<link rel="stylesheet" href="css/tv.css">
+</head>
+<body>
+<div id="stage">
+  <div id="bg" aria-hidden="true">
+    <div class="bg-layer" id="bg-a"></div>
+    <div class="bg-layer" id="bg-b"></div>
+  </div>
+  <div id="scrim" aria-hidden="true"></div>
+  <div id="grid" aria-hidden="true"></div>
+  <div id="grain" aria-hidden="true"></div>
+
+  <!-- Top rail: label left, clock right -->
+  <header id="rail">
+    <div id="rail-label"><span class="tick"></span><span>Home</span></div>
+    <div id="clock" aria-live="off">
+      <div id="time"><span id="time-hm">--:--</span><span id="time-ampm"></span></div>
+      <div id="date">&nbsp;</div>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <section id="hero">
+    <div id="hero-kicker"><span class="tick"></span><span id="hero-status">Home</span></div>
+    <h1 id="hero-greeting">Good evening.</h1>
+    <p id="hero-accent">Only the greatest possibilities.</p>
+  </section>
+
+  <!-- Dock -->
+  <nav id="dock" aria-label="Apps">
+    <div id="dock-head">
+      <span class="dock-title">Apps</span>
+      <span class="dock-hint" id="dock-hint">Left and right to choose. OK to open.</span>
+    </div>
+    <div id="dock-row"></div>
+  </nav>
+
+  <footer id="foot">
+    <span id="foot-left" aria-hidden="true"></span>
+    <span id="foot-right" aria-hidden="true"><span id="credit"></span></span>
+  </footer>
+
+  <!-- Ambient (screensaver) -->
+  <div id="ambient" aria-hidden="true">
+    <div id="ambient-rule"></div>
+    <div id="ambient-time">--:--</div>
+    <div id="ambient-date">&nbsp;</div>
+  </div>
+
+  <div id="toast" role="status"></div>
+</div>
+<script src="js/config.js"></script>
+<script src="js/platform.js"></script>
+<script src="js/backdrop.js"></script>
+<script src="js/home.js"></script>
+</body>
+</html>

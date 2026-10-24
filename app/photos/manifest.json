@@ -1,0 +1,89 @@
+{
+ "about": "Backdrop photos for PNW Home. All are public domain, CC0 or CC BY works from Wikimedia Commons; credit is shown on screen.",
+ "photos": [
+  {
+   "src": "photos/rainier-reflection.jpg",
+   "caption": "Reflection Lake, Mount Rainier",
+   "artist": "Vulturesong",
+   "license": "CC0",
+   "source": "https://commons.wikimedia.org/wiki/File%3AMount_Rainier_-_HCP_-_October_17%2C_2022_-_068_-_Reflection_Lake.jpg"
+  },
+  {
+   "src": "photos/rainier-nps-sunrise.jpg",
+   "caption": "Mount Rainier from Sunrise",
+   "artist": "NPS Photo",
+   "license": "Public domain",
+   "source": "https://commons.wikimedia.org/wiki/File%3AMount_Rainier_and_Sunrise_%28163a05fa-3224-4103-937d-dfb5ca310c0f%29.JPG"
+  },
+  {
+   "src": "photos/rainier-paradise.jpg",
+   "caption": "Paradise wildflowers, Mount Rainier",
+   "artist": "Mount Rainier NPS",
+   "license": "Public domain",
+   "source": "https://commons.wikimedia.org/wiki/File%3AParadise_Wildflowers_%2853046019806%29.jpg"
+  },
+  {
+   "src": "photos/rainier-over-tacoma.jpg",
+   "caption": "Mount Rainier over Tacoma",
+   "artist": "Lyn Topinka (USGS)",
+   "license": "Public domain",
+   "source": "https://commons.wikimedia.org/wiki/File%3AMount_Rainier_over_Tacoma.jpg"
+  },
+  {
+   "src": "photos/rainier-port-tacoma.jpg",
+   "caption": "Mount Rainier over the Port of Tacoma",
+   "artist": "Broran28",
+   "license": "Public domain",
+   "source": "https://commons.wikimedia.org/wiki/File%3AMount_Rainier_overlooking_the_Port_of_Tacoma.jpg"
+  },
+  {
+   "src": "photos/rainier-puget-sound.jpg",
+   "caption": "Mount Rainier from Puget Sound",
+   "artist": "Thomson200",
+   "license": "CC0",
+   "source": "https://commons.wikimedia.org/wiki/File%3AMount_Rainier_viewed_from_Puget_Sound%2C_May_2013.jpg"
+  },
+  {
+   "src": "photos/rainier-and-sound.jpg",
+   "caption": "Mount Rainier and Puget Sound",
+   "artist": "Symi81 at English Wikipedia",
+   "license": "Public domain",
+   "source": "https://commons.wikimedia.org/wiki/File%3AMount_Rainier_and_Puget_Sound.jpg"
+  },
+  {
+   "src": "photos/tacoma-aerial.jpg",
+   "caption": "Tacoma from the air",
+   "artist": "Spicypepper999",
+   "license": "CC0",
+   "source": "https://commons.wikimedia.org/wiki/File%3ATacoma_Washington_Aerial%2C_June_2025.jpg"
+  },
+  {
+   "src": "photos/tacoma-skyline-bridge.jpg",
+   "caption": "Tacoma skyline and the East 21st Street Bridge",
+   "artist": "Broran28",
+   "license": "Public domain",
+   "source": "https://commons.wikimedia.org/wiki/File%3ATacoma_skyline_behind_East_21st_Street_Bridge.jpg"
+  },
+  {
+   "src": "photos/tacoma-narrows.jpg",
+   "caption": "Tacoma Narrows Bridge",
+   "artist": "Lderendi",
+   "license": "Public domain",
+   "source": "https://commons.wikimedia.org/wiki/File%3ATacoma_Narrows_Bridge_2009.jpg"
+  },
+  {
+   "src": "photos/sound-point-defiance.jpg",
+   "caption": "Puget Sound at sunset, Point Defiance and Vashon Island",
+   "artist": "Doug Wilson",
+   "license": "Public domain",
+   "source": "https://commons.wikimedia.org/wiki/File%3APUGET_SOUND_AT_SUNSET%2C_LOOKING_TOWARD_POINT_DEFIANCE_%28LEFT%29_AND_VASHON_ISLAND_%28RIGHT%29_-_NARA_-_552350.jpg"
+  },
+  {
+   "src": "photos/nisqually-delta.jpg",
+   "caption": "Nisqually River delta, South Puget Sound",
+   "artist": "USFWS - Pacific Region",
+   "license": "Public domain",
+   "source": "https://commons.wikimedia.org/wiki/File%3ABilly_Frank_Jr._Nisqually_National_Wildlife_Refuge%2C_Flussdelta_des_Nisqually_River_im_US-Bundesstaat_Washington.jpg"
+  }
+ ]
+}

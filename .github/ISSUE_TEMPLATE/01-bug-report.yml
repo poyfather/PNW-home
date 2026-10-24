@@ -1,0 +1,66 @@
+name: Bug report
+description: Something is broken or behaves wrongly
+title: "[Bug]: "
+labels: ["bug", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: Thanks for the report. The TV model and Tizen version matter a lot here, so please fill those in.
+  - type: textarea
+    id: description
+    attributes:
+      label: What happened
+      description: What you saw, and what you expected instead
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Open PNW Home
+        2. Press Right twice
+        3. ...
+    validations:
+      required: true
+  - type: input
+    id: model
+    attributes:
+      label: TV model
+      placeholder: UN65NU8000
+    validations:
+      required: true
+  - type: input
+    id: tizen
+    attributes:
+      label: Tizen version
+      description: Settings → Support → About this TV
+      placeholder: "4.0"
+    validations:
+      required: true
+  - type: dropdown
+    id: where
+    attributes:
+      label: Where does it happen
+      options:
+        - On the TV
+        - In the desktop preview (browser)
+        - Both
+    validations:
+      required: true
+  - type: dropdown
+    id: severity
+    attributes:
+      label: Severity
+      options:
+        - Low (cosmetic)
+        - Medium (a feature partly broken)
+        - High (a feature completely broken)
+        - Critical (app will not install or start)
+    validations:
+      required: true
+  - type: textarea
+    id: extra
+    attributes:
+      label: Anything else
+      description: A phone photo of the screen helps. Drag it in here.

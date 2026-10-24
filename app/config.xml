@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  PNW Home: a home screen for the Samsung UN65NU8000 (Tizen 4.0) in the
+  ACU visual language. Package PnwHome001, app PnwHome001.PnwHome.
+  Public-level privileges only, so it installs with the free Samsung
+  distributor certificate. No background service.
+-->
+<widget xmlns="http://www.w3.org/ns/widgets" xmlns:tizen="http://tizen.org/ns/widgets"
+        id="http://pnw-home.local/app" version="1.0.0" viewmodes="maximized">
+    <tizen:application id="PnwHome001.PnwHome" package="PnwHome001" required_version="3.0"/>
+    <name>PNW Home</name>
+    <description>Home screen with a clock, a dock of apps, and an ambient screensaver.</description>
+    <content src="index.html"/>
+    <icon src="icon.png"/>
+
+    <feature name="http://tizen.org/feature/screen.size.all"/>
+
+    <!-- Web fonts: use.typekit.net / p.typekit.net (Futura PT) and fonts.googleapis.com /
+         fonts.gstatic.com (Baumans). -->
+    <access origin="*" subdomains="true"/>
+
+    <tizen:privilege name="http://tizen.org/privilege/internet"/>
+    <tizen:privilege name="http://tizen.org/privilege/application.launch"/>
+    <tizen:privilege name="http://tizen.org/privilege/application.info"/>
+
+    <tizen:profile name="tv-samsung"/>
+    <tizen:metadata key="http://samsung.com/tv/metadata/multitasking.support" value="true"/>
+
+    <tizen:setting screen-orientation="landscape" context-menu="disable" background-support="disable"
+                   encryption="disable" install-location="auto" hwkey-event="enable"/>
+</widget>
