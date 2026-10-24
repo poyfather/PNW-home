@@ -1,0 +1,59 @@
+name: Model report
+description: Tell us how PNW Home behaves on your Samsung TV model
+title: "[Model]: "
+labels: ["model-report"]
+body:
+  - type: markdown
+    attributes:
+      value: Only one TV has been tested so far. Every report widens the compatibility table.
+  - type: input
+    id: model
+    attributes:
+      label: TV model
+      placeholder: QN65Q70C
+    validations:
+      required: true
+  - type: input
+    id: tizen
+    attributes:
+      label: Tizen version
+      placeholder: "8.0"
+    validations:
+      required: true
+  - type: dropdown
+    id: install
+    attributes:
+      label: Did it install
+      options:
+        - Yes, first try
+        - Yes, after changes (say what below)
+        - No (paste the error below)
+    validations:
+      required: true
+  - type: dropdown
+    id: fonts
+    attributes:
+      label: Did the web fonts load
+      description: Headings should be Futura PT (geometric, round). If they look like Arial, the fonts did not load.
+      options:
+        - Yes, Futura and Baumans
+        - Partly
+        - No, fallback font
+        - Not sure
+    validations:
+      required: true
+  - type: dropdown
+    id: photos
+    attributes:
+      label: Did the photo backdrop render and crossfade
+      options:
+        - "Yes"
+        - Photos show but no crossfade or drift
+        - "No"
+    validations:
+      required: true
+  - type: textarea
+    id: notes
+    attributes:
+      label: Notes
+      description: Anything odd, plus a phone photo of the screen if you can.

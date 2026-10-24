@@ -1,0 +1,62 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  lint:
+    name: Syntax and manifest checks
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: JavaScript syntax
+        run: |
+          for f in app/js/*.js; do node --check "$f"; done
+
+      - name: ES5 only (no arrow functions, template literals, let or const)
+        run: |
+          if grep -vE '^\s*(//|\*|/\*)' app/js/*.js | grep -nE '=>|`|^\s*(let|const)\s'; then
+            echo "::error::Tizen 4.0 runs an ES5-era engine; see CONTRIBUTING.md"; exit 1
+          fi
+
+      - name: No CSS grid
+        run: |
+          if grep -nE 'display:\s*grid|grid-template|^\s*gap:' app/css/*.css; then
+            echo "::error::CSS grid is not available on the Tizen 4.0 engine"; exit 1
+          fi
+
+      - name: Photo manifest parses and files exist
+        run: |
+          python3 - <<'EOF'
+          import json, os, sys
+          m = json.load(open('app/photos/manifest.json'))
+          missing = [p['src'] for p in m['photos'] if not os.path.exists(os.path.join('app', p['src']))]
+          bad = [p['src'] for p in m['photos'] if not all(k in p for k in ('caption', 'artist', 'license', 'source'))]
+          if missing or bad:
+              print('missing files:', missing); print('entries lacking credit fields:', bad); sys.exit(1)
+          print(len(m['photos']), 'photos ok')
+          EOF
+
+      - name: Tizen manifest is well-formed and the package ID is 10 characters
+        run: |
+          sudo apt-get install -y -qq libxml2-utils >/dev/null
+          xmllint --noout app/config.xml
+          pkg=$(grep -oE 'package="[^"]+"' app/config.xml | cut -d'"' -f2)
+          [ ${#pkg} -eq 10 ] || { echo "::error::package ID '$pkg' must be exactly 10 characters"; exit 1; }
+          echo "package $pkg ok"
+
+      - name: No em or en dashes in copy
+        run: |
+          if grep -rnP '[\x{2014}\x{2013}]' README.md CONTRIBUTING.md SECURITY.md SUPPORT.md app/index.html app/js/config.js; then
+            echo "::error::Use commas, periods or 'to' instead of dashes"; exit 1
+          fi
