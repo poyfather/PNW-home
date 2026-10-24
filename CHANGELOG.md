@@ -6,6 +6,27 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+## [1.2.0] - 2026-10-23
+
+### Added
+- Android TV, Google TV and Fire TV support from one APK (`android/`): a Kotlin WebView shell
+  around the shared web core, a `PNWAndroid` bridge that lists and launches installed apps, and
+  manifest entries so it appears in the Leanback row and can be chosen as the Home app.
+- `android/build.sh` and `docs/ANDROID.md` (toolchain setup without Android Studio, ADB install,
+  setting it as Home, emulator).
+- Dock entries carry Android package names next to Tizen IDs.
+- GitHub Actions job that builds the debug APK and uploads it as an artifact.
+- Dock fill: when fewer than six configured apps are installed, the dock is topped up with the
+  device's other launcher apps, so a new device never shows an empty row.
+
+### Changed
+- `platform.js` is now a three-backend platform layer (Tizen, Android, desktop mock) with shared
+  id-then-name matching.
+
+### Fixed
+- The dock row scrolled as soon as focus left the first tile, clipping it. It now scrolls only
+  when the focused tile would leave the visible strip, in either direction.
+
 ## [1.1.0] - 2026-10-23
 
 ### Added
@@ -29,6 +50,7 @@ All notable changes to this project are documented here. The format follows
 - Package ID is 10 characters (`PnwHome001`), which Samsung TVs require; an 8-character ID fails to install with error 118019.
 - Tested on a 2018 UN65NU8000 (Tizen 4.0).
 
-[Unreleased]: https://github.com/poyfather/PNW-home/compare/v1.1.0...HEAD
+[Unreleased]: https://github.com/poyfather/PNW-home/compare/v1.2.0...HEAD
+[1.2.0]: https://github.com/poyfather/PNW-home/compare/v1.1.0...v1.2.0
 [1.1.0]: https://github.com/poyfather/PNW-home/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/poyfather/PNW-home/releases/tag/v1.0.0

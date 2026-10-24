@@ -106,15 +106,21 @@
     for (var k = 0; k < tiles.length; k++) tiles[k].classList.toggle('focus', k === focus);
     $('hero-status').textContent = items[focus].label;
     if (!quiet) ls.set('pnw.focus', items[focus].key);
-    // Keep the focused tile in view when the row is wider than the stage.
+    // Scroll the row only when the focused tile would leave the visible 1728px strip:
+    // right edge past the right side -> shift left just enough; left edge before the
+    // current shift -> shift back to it. Otherwise the row stays where it is.
     var row = $('dock-row');
     var tile = tiles[focus];
     if (tile) {
-      var maxShift = Math.max(0, row.scrollWidth - 1920 + 160);
-      var want = Math.max(0, Math.min(maxShift, tile.offsetLeft - 160));
-      row.style.transform = 'translateX(' + (-want) + 'px)';
+      var view = 1920 - 96 * 2;
+      var left = tile.offsetLeft, right = left + tile.offsetWidth;
+      if (right - rowShift > view) rowShift = right - view;
+      if (left < rowShift) rowShift = left;
+      rowShift = Math.max(0, rowShift);
+      row.style.transform = 'translateX(' + (-rowShift) + 'px)';
     }
   }
+  var rowShift = 0;
 
   function resolveApps() {
     return P.resolveApps(cfg.apps).then(function (found) {
@@ -125,8 +131,24 @@
         items.push({ key: def.key, label: def.label, id: f.id,
           iconUrl: def.icon === false ? null : (typeof def.icon === 'string' ? def.icon : P.iconUrl(f.iconPath)) });
       });
+      var fill = cfg.fillDock || {};
+      var min = fill.enabled === false ? 0 : (fill.minTiles || 6);
+      if (items.length >= min) return items;
+      // Few configured apps on this device: add the other launchable apps, by name.
+      return P.allApps().then(function (all) {
+        var have = {};
+        items.forEach(function (it) { have[it.id] = true; });
+        var extra = all.filter(function (a) { return !have[a.id]; })
+          .sort(function (a, b) { return String(a.name).localeCompare(String(b.name)); })
+          .slice(0, Math.max(0, (fill.maxTiles || 12) - items.length));
+        extra.forEach(function (a) {
+          items.push({ key: 'app:' + a.id, label: a.name || a.id, id: a.id, iconUrl: P.iconUrl(a.iconPath) });
+        });
+        return items;
+      });
+    }).then(function () {
       if (!items.length) {
-        toast('No dock apps were found on this TV.', 6000);
+        toast('No apps were found on this TV.', 6000);
       }
       var remembered = ls.get('pnw.focus');
       var idx = 0;

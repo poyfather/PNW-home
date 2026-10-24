@@ -1,10 +1,11 @@
 # PNW Home
 
-A calm, type-led home screen for Samsung Tizen TVs: a clock, a numbered dock of your apps, and rotating photos of Mount Rainier, Tacoma and the South Puget Sound. No ads, no tracking, no background service.
+A calm, type-led home screen for smart TVs: a clock, a numbered dock of your apps, and rotating photos of Mount Rainier, Tacoma and the South Puget Sound. No ads, no tracking, no background service. Runs on Samsung Tizen and, from one APK, on Android TV, Google TV and Fire TV.
 
 [![CI](https://github.com/poyfather/PNW-home/actions/workflows/ci.yml/badge.svg)](https://github.com/poyfather/PNW-home/actions/workflows/ci.yml)
+[![Android](https://github.com/poyfather/PNW-home/actions/workflows/android.yml/badge.svg)](https://github.com/poyfather/PNW-home/actions/workflows/android.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-1B2A4A.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/version-1.1.0-C75B12.svg)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-1.2.0-C75B12.svg)](CHANGELOG.md)
 [![Tizen 4.0+](https://img.shields.io/badge/Tizen-4.0%2B-D4952B.svg)](#compatibility)
 
 ![PNW Home on a 2018 Samsung TV](docs/screenshots/home.png)
@@ -13,9 +14,19 @@ A calm, type-led home screen for Samsung Tizen TVs: a clock, a numbered dock of 
 
 Samsung's Smart Hub puts promoted tiles and autoplaying previews between you and the three apps you actually open. PNW Home is a plain Tizen web app that the TV can start into instead: your apps in a row, the time, and a good photo of the Pacific Northwest. The look is cassette futurism: a navy ground, hairline grids, a warm tint, Futura PT and Baumans type, one orange accent for the focused tile.
 
-Built and tested on a 2018 UN65NU8000 running Tizen 4.0. The TV's Home button still opens Smart Hub; no app can change that. With **Autorun Last App** on, the TV powers on into PNW Home.
+## Platforms
 
-## Quick start
+| Platform | Package | Home button | Guide |
+|---|---|---|---|
+| Samsung Tizen (2018 and later) | `.wgt`, signed for your TV | Still opens Smart Hub; the TV can autorun PNW Home at power-on instead | [docs/INSTALL.md](docs/INSTALL.md) |
+| Android TV and Google TV | one `.apk` | **Can own the Home button** once the stock launcher is disabled (reversible) | [docs/ANDROID.md](docs/ANDROID.md) |
+| Fire TV | the same `.apk` | Amazon locks the launcher; opens from Your Apps | [docs/ANDROID.md](docs/ANDROID.md) |
+
+The web core in `app/` is shared. The Tizen package is that folder signed; the Android build wraps it in a small Kotlin WebView shell with a bridge that lists and launches the TV's apps. LG webOS is the next target. Roku has no way for one channel to launch another, and Hisense VIDAA has no public sideloading, so neither is planned.
+
+Built and tested on a 2018 UN65NU8000 (Tizen 4.0) and the Android TV emulator (API 34).
+
+## Quick start (Samsung Tizen)
 
 You need a Samsung TV in Developer Mode, Samsung's Tizen CLI, and a free Samsung signing certificate for your TV. [docs/INSTALL.md](docs/INSTALL.md) walks through all three.
 
@@ -33,6 +44,17 @@ You need a Samsung TV in Developer Mode, Samsung's Tizen CLI, and a free Samsung
    ```
 
 Then on the TV: **Apps → App Settings → PNW Home → Add to Home**, and under **Settings → General → Smart Features** turn **Autorun Smart Hub** off and **Autorun Last App** on.
+
+## Quick start (Android TV, Google TV, Fire TV)
+
+You need a JDK 17 and an Android SDK (platform 34). [docs/ANDROID.md](docs/ANDROID.md) has a five-line setup without Android Studio.
+
+```sh
+android/build.sh                          # -> dist/PnwHome-debug.apk
+adb connect <TV_IP>:5555 && adb install -r dist/PnwHome-debug.apk
+```
+
+To make the Home button open it on Android TV or Google TV, the stock launcher has to be disabled (one `adb` command, one to undo); [docs/ANDROID.md](docs/ANDROID.md) explains why and how.
 
 ## What it looks like
 
@@ -67,6 +89,7 @@ Everything lives in [`app/js/config.js`](app/js/config.js):
 | `apps` | The dock, in order. Each entry lists Tizen app IDs to try, then name patterns. `icon: false` shows a type-only tile. |
 | `greetings`, `accent` | Hero copy. The greeting follows the time of day; the accent line is one short statement. |
 | `theme` | `'navy'` (default) or `'orange'` |
+| `fillDock` | Top the dock up with the device's other apps when fewer than `minTiles` configured ones are installed |
 | `locale`, `hour12` | Clock and date format |
 | `photos` | Backdrop on or off, manifest path, time between photos |
 | `ambient` | Idle time before the screensaver |
@@ -99,15 +122,16 @@ Open `http://127.0.0.1:8765/index.html`. Without the Tizen runtime the dock uses
 ## Project layout
 
 ```
-app/              the Tizen web app (config.xml, index.html, css/, js/, photos/, icon.png)
-scripts/          build.sh, install.sh, tizen-env.example.sh
-docs/             INSTALL.md and screenshots
-.github/          CI, issue forms, PR template, Dependabot
+app/              the shared web core (index.html, css/, js/, photos/, icon.png) + the Tizen config.xml
+android/          Kotlin shell: Gradle project, MainActivity (WebView), AppBridge (list/launch apps)
+scripts/          Tizen build.sh, install.sh, tizen-env.example.sh
+docs/             INSTALL.md (Tizen), ANDROID.md, screenshots
+.github/          CI, Android build, issue forms, PR template, Dependabot
 ```
 
 ## Compatibility
 
-Written for the Tizen 4.0 web engine (Chromium 56 era): ES5, flexbox, CSS variables, no CSS grid. It should run on any Samsung TV from 2018 onward. Only the UN65NU8000 has been tested; please [report](https://github.com/poyfather/PNW-home/issues/new/choose) what you see on yours.
+The web core is written for the Tizen 4.0 web engine (Chromium 56 era): ES5, flexbox, CSS variables, no CSS grid. It should run on any Samsung TV from 2018 onward and in any Android WebView from Android 8.0 up. Tested so far on one Samsung (UN65NU8000) and the Android TV emulator; please [report](https://github.com/poyfather/PNW-home/issues/new/choose) what you see on yours.
 
 ## Contributing
 

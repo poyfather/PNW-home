@@ -14,7 +14,9 @@
     try { q[decodeURIComponent(i < 0 ? kv : kv.slice(0, i))] = i < 0 ? '1' : decodeURIComponent(kv.slice(i + 1)); }
     catch (e) { /* ignore */ }
   });
-  var preview = typeof window.tizen === 'undefined' || q.preview === '1';
+  var onTizen = typeof window.tizen !== 'undefined';
+  var onAndroid = typeof window.PNWAndroid !== 'undefined';   // the Kotlin shell's bridge
+  var preview = (!onTizen && !onAndroid) || q.preview === '1';
 
   window.PNW = window.PNW || {};
   window.PNW.query = q;
@@ -51,25 +53,40 @@
     // The dock, in order. 'icon: false' shows a type-only tile (some apps report
     // a poor icon to other apps: YouTube reports its engine's pinwheel, Prime
     // Video's may not load, Samsung TV Plus is a system app).
+    // If fewer than `minTiles` of the apps below are installed, the dock is topped up with
+    // the device's other launchable apps (alphabetical) up to `maxTiles`.
+    fillDock: { enabled: true, minTiles: 6, maxTiles: 12 },
+
+    // `ids` are Tizen app IDs; `android` are Android package names (Android TV, Google TV
+    // and Fire TV builds of each app). Entries without a match on the current TV are skipped.
     apps: [
       { key: 'youtube', label: 'YouTube', ids: ['9Ur5IzDKqV.TizenYouTube', 'com.samsung.tv.cobalt-yt'],
+        android: ['com.google.android.youtube.tv', 'com.amazon.firetv.youtube'],
         names: ['^youtube$'], icon: false },
       { key: 'netflix', label: 'Netflix', ids: ['RN1MCdNq8t.Netflix', 'org.tizen.netflix-app'],
+        android: ['com.netflix.ninja'],
         names: ['^netflix$', '\\bnetflix\\b'] },
       { key: 'prime', label: 'Prime Video', ids: ['evKhCgZelL.AmazonIgnitionLauncher2', 'org.tizen.ignition'],
+        android: ['com.amazon.amazonvideo.livingroom', 'com.amazon.avod', 'com.amazon.firebat'],
         names: ['^prime video$', '^amazon prime video$'], icon: false },
       { key: 'disney', label: 'Disney+', ids: ['MCmYXNxgcu.DisneyPlus'],
+        android: ['com.disney.disneyplus'],
         names: ['^disney plus$', '^disney$'] },
       { key: 'hulu', label: 'Hulu', ids: ['LBUAQX1exg.Hulu'],
+        android: ['com.hulu.livingroomplus', 'com.hulu.plus'],
         names: ['^hulu$'] },
       { key: 'peacock', label: 'Peacock', ids: ['gzcc4LRFBF.Peacock'],
+        android: ['com.peacocktv.peacockandroid'],
         names: ['^peacock tv$', '^peacock$'] },
       { key: 'appletv', label: 'Apple TV', ids: ['com.samsung.tv.aria-video'],
+        android: ['com.apple.atve.androidtv.appletv', 'com.apple.atve.amazon.appletv'],
         names: ['^apple tv$'], icon: false },
       { key: 'tvplus', label: 'Samsung TV Plus', ids: ['com.samsung.tv.tvPlusDeeplinker', 'com.samsung.tv.tvplus'],
+        android: [],
         names: ['^samsung tv plus$', '^tv plus$'], icon: false },
       { key: 'browser', label: 'Internet', ids: ['org.tizen.browser'],
-        names: ['^internet$', '^browser$'], icon: false }
+        android: ['com.google.android.tv.browser', 'org.mozilla.tv.firefox', 'com.amazon.cloud9'],
+        names: ['^internet$', '^browser$', '^silk browser$', '^firefox$'], icon: false }
     ]
   };
 }());
