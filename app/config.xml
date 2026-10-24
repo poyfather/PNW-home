@@ -6,7 +6,7 @@
   distributor certificate. No background service.
 -->
 <widget xmlns="http://www.w3.org/ns/widgets" xmlns:tizen="http://tizen.org/ns/widgets"
-        id="http://pnw-home.local/app" version="1.0.0" viewmodes="maximized">
+        id="http://pnw-home.local/app" version="1.1.0" viewmodes="maximized">
     <tizen:application id="PnwHome001.PnwHome" package="PnwHome001" required_version="3.0"/>
     <name>PNW Home</name>
     <description>Home screen with a clock, a dock of apps, and an ambient screensaver.</description>

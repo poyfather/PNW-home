@@ -21,6 +21,10 @@
   window.PNW.config = {
     preview: preview,
 
+    // Colour theme: 'navy' (default) or 'orange' (burnt orange ground, navy accent).
+    // ?theme=orange overrides this for a preview.
+    theme: 'navy',
+
     // Hero copy. Greeting changes with the time of day; the accent line is a
     // short brand statement set in Baumans (never body copy).
     greetings: { morning: 'Good morning.', afternoon: 'Good afternoon.', evening: 'Good evening.', night: 'Good night.' },

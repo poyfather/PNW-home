@@ -2,11 +2,16 @@
  * PNW Home - styles. Design frame 1920x1080, scaled to the screen by home.js.
  * Palette: navy ground, burnt orange accent, retro gold labels, warm cream text (digital values).
  * Engine target: Tizen 4.0 (Chromium 56 era) -> flexbox, CSS variables, no grid.
+ *
+ * Themes: the default "navy" theme and an alternate "orange" theme (html.theme-orange).
+ * Every colour below is a semantic token, so a theme only overrides the token block.
  */
 :root {
+  /* raw palette */
   --navy: #1B2A4A;
   --navy-deep: #15213B;
   --orange: #C75B12;
+  --brown: #3D1F00;
   --gold: #D4952B;
   --cream: #E8E6E2;
   --offwhite: #F2F0EC;
@@ -14,6 +19,22 @@
   --midgray: #6B7280;
   --bluegray: #D0D8E0;
   --teal: #005984;
+
+  /* semantic tokens: navy theme (default) */
+  --ground: var(--navy);               /* page background */
+  --ground-rgb: 27, 42, 74;            /* same, for rgba() scrims */
+  --ground-deep: var(--navy-deep);     /* ambient screen */
+  --ground-deep-rgb: 21, 33, 59;
+  --accent: var(--orange);             /* the one emphasis colour: focused tile */
+  --accent-text: #FFFFFF;              /* text inside the focused tile */
+  --label: var(--gold);                /* small caps labels, index numbers, AM/PM */
+  --line-rgb: 208, 216, 224;           /* hairlines, dot grid */
+  --text: var(--cream);
+  --text-strong: var(--offwhite);
+  --text-muted: var(--bluegray);
+  --tint: rgba(199, 91, 18, 0.12);     /* warm photo tint */
+  --toast-bg: var(--cream);
+  --toast-text: var(--slate);
 
   --font-head: 'futura-pt', Arial, sans-serif;
   --font-accent: 'Baumans', 'futura-pt', Arial, sans-serif;
@@ -23,10 +44,28 @@
   --ease-in: cubic-bezier(0.7, 0, 0.84, 0);
 }
 
+/* Alternate theme: burnt orange ground, cream type, navy as the cold counterpoint. */
+html.theme-orange {
+  --ground: var(--orange);
+  --ground-rgb: 199, 91, 18;
+  --ground-deep: var(--brown);
+  --ground-deep-rgb: 61, 31, 0;
+  --accent: var(--navy);
+  --accent-text: var(--offwhite);
+  --label: var(--cream);
+  --line-rgb: 242, 240, 236;
+  --text: var(--offwhite);
+  --text-strong: #FFFFFF;
+  --text-muted: var(--cream);
+  --tint: rgba(61, 31, 0, 0.18);
+  --toast-bg: var(--navy);
+  --toast-text: var(--offwhite);
+}
+
 html, body {
   margin: 0; padding: 0; width: 100%; height: 100%;
-  background: var(--navy);
-  color: var(--cream);
+  background: var(--ground);
+  color: var(--text);
   font-family: var(--font-head);
   font-weight: 400;
   overflow: hidden;
@@ -38,7 +77,7 @@ html, body {
   position: absolute; left: 0; top: 0;
   width: 1920px; height: 1080px;
   transform-origin: 0 0;
-  background: var(--navy);
+  background: var(--ground);
   overflow: hidden;
 }
 
@@ -55,15 +94,15 @@ html, body {
 }
 .bg-layer.on { opacity: 1; }
 .bg-layer.drift { transition: opacity 1600ms var(--ease-out), transform 70s linear; transform: scale(1.06); }
-/* Legibility scrim: navy from the left (hero) and from the bottom (dock), plus the warm
-   Burnt Orange tint the brand prescribes for photography (10 to 15%). */
+/* Legibility scrim in the ground colour: from the left (hero), from the bottom (dock), a
+   little from the top (clock), plus the warm photo tint. */
 #scrim {
   position: absolute; left: 0; top: 0; right: 0; bottom: 0;
   background:
-    linear-gradient(90deg, rgba(27, 42, 74, 0.90) 0%, rgba(27, 42, 74, 0.66) 42%, rgba(27, 42, 74, 0.22) 75%, rgba(27, 42, 74, 0.14) 100%),
-    linear-gradient(0deg, rgba(27, 42, 74, 0.96) 0%, rgba(27, 42, 74, 0.80) 32%, rgba(27, 42, 74, 0.0) 60%),
-    linear-gradient(180deg, rgba(27, 42, 74, 0.55) 0%, rgba(27, 42, 74, 0.0) 28%),
-    rgba(199, 91, 18, 0.12);
+    linear-gradient(90deg, rgba(var(--ground-rgb), 0.90) 0%, rgba(var(--ground-rgb), 0.66) 42%, rgba(var(--ground-rgb), 0.22) 75%, rgba(var(--ground-rgb), 0.14) 100%),
+    linear-gradient(0deg, rgba(var(--ground-rgb), 0.96) 0%, rgba(var(--ground-rgb), 0.80) 32%, rgba(var(--ground-rgb), 0.0) 60%),
+    linear-gradient(180deg, rgba(var(--ground-rgb), 0.55) 0%, rgba(var(--ground-rgb), 0.0) 28%),
+    var(--tint);
 }
 html.ambient .bg-layer.on { opacity: 0.55; }
 
@@ -71,9 +110,9 @@ html.ambient .bg-layer.on { opacity: 0.55; }
 #grid {
   position: absolute; left: 0; top: 0; right: 0; bottom: 0;
   background-image:
-    radial-gradient(rgba(208, 216, 224, 0.16) 1px, transparent 1.6px),
-    linear-gradient(rgba(208, 216, 224, 0.045) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(208, 216, 224, 0.045) 1px, transparent 1px);
+    radial-gradient(rgba(var(--line-rgb), 0.16) 1px, transparent 1.6px),
+    linear-gradient(rgba(var(--line-rgb), 0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(var(--line-rgb), 0.045) 1px, transparent 1px);
   background-size: 48px 48px, 240px 240px, 240px 240px;
   background-position: 24px 24px, 0 0, 0 0;
 }
@@ -82,39 +121,38 @@ html.ambient .bg-layer.on { opacity: 0.55; }
   opacity: 0.08;
   background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.6 0'/></filter><rect width='160' height='160' filter='url(%23n)'/></svg>");
 }
-/* Warm vignette: Burnt Orange at low opacity unifies the palette (brand photo rule). */
 #stage:before { content: none; }
 
 /* ---------- top rail ---------- */
 #rail {
   position: absolute; left: 96px; right: 96px; top: 64px; height: 120px;
   display: flex; align-items: flex-start; justify-content: space-between;
-  border-bottom: 1px solid rgba(208, 216, 224, 0.22);
+  border-bottom: 1px solid rgba(var(--line-rgb), 0.22);
   padding-bottom: 28px;
 }
 #rail-label {
   display: flex; align-items: center; margin-top: 10px;
   font-family: var(--font-mono); font-size: 22px; letter-spacing: 0.22em; text-transform: uppercase;
-  color: var(--gold);
+  color: var(--label);
 }
-#rail-label .tick { display: inline-block; width: 36px; height: 2px; background: var(--gold); margin-right: 18px; }
+#rail-label .tick { display: inline-block; width: 36px; height: 2px; background: var(--label); margin-right: 18px; }
 
 #clock { text-align: right; }
 #time {
   font-family: var(--font-head); font-weight: 700;
   font-size: 84px; line-height: 0.9; letter-spacing: -0.02em;
-  color: var(--offwhite);
+  color: var(--text-strong);
   font-variant-numeric: tabular-nums;
 }
 #time-ampm {
   display: inline-block; margin-left: 14px;
   font-size: 26px; font-weight: 500; letter-spacing: 0.08em;
-  color: var(--gold); vertical-align: 14px;
+  color: var(--label); vertical-align: 14px;
 }
 #date {
   margin-top: 12px;
   font-size: 26px; font-weight: 500; letter-spacing: 0.02em;
-  color: var(--bluegray);
+  color: var(--text-muted);
 }
 
 /* ---------- hero ---------- */
@@ -123,34 +161,34 @@ html.ambient .bg-layer.on { opacity: 0.55; }
   display: flex; align-items: center;
   font-family: var(--font-mono); font-weight: 400;
   font-size: 22px; letter-spacing: 0.22em; text-transform: uppercase;
-  color: var(--gold);
+  color: var(--label);
 }
-#hero-kicker .tick { display: inline-block; width: 36px; height: 2px; background: var(--gold); margin-right: 18px; }
+#hero-kicker .tick { display: inline-block; width: 36px; height: 2px; background: var(--label); margin-right: 18px; }
 #hero-greeting {
   margin: 26px 0 0 0;
   font-family: var(--font-head); font-weight: 700;
   font-size: 128px; line-height: 0.95; letter-spacing: -0.03em;
-  color: var(--offwhite);
+  color: var(--text-strong);
 }
 #hero-accent {
   margin: 30px 0 0 4px;
   font-family: var(--font-accent); font-weight: 400;
   font-size: 44px; line-height: 1.1;
-  color: var(--cream);
+  color: var(--text);
 }
 
 /* ---------- dock ---------- */
 #dock { position: absolute; left: 96px; right: 96px; bottom: 112px; }
 #dock-head {
   display: flex; align-items: baseline; justify-content: space-between;
-  border-top: 1px solid rgba(208, 216, 224, 0.22);
+  border-top: 1px solid rgba(var(--line-rgb), 0.22);
   padding-top: 18px; margin-bottom: 26px;
 }
 .dock-title {
   font-family: var(--font-mono); font-size: 22px; letter-spacing: 0.22em; text-transform: uppercase;
-  color: var(--gold);
+  color: var(--label);
 }
-.dock-hint { font-size: 22px; font-weight: 400; color: var(--bluegray); }
+.dock-hint { font-size: 22px; font-weight: 400; color: var(--text-muted); }
 
 #dock-row {
   display: flex; flex-direction: row; align-items: stretch;
@@ -161,8 +199,8 @@ html.ambient .bg-layer.on { opacity: 0.55; }
   position: relative; flex: 0 0 auto;
   width: 282px; height: 196px; margin-right: 28px;
   padding: 22px 26px 24px 26px;
-  border: 1px solid rgba(208, 216, 224, 0.30);
-  background: rgba(21, 33, 59, 0.55);
+  border: 1px solid rgba(var(--line-rgb), 0.30);
+  background: rgba(var(--ground-deep-rgb), 0.55);
   display: flex; flex-direction: column; justify-content: space-between;
   transition: transform 200ms var(--ease-out), border-color 200ms var(--ease-out), background-color 200ms var(--ease-out);
   will-change: transform;
@@ -170,7 +208,7 @@ html.ambient .bg-layer.on { opacity: 0.55; }
 .tile:last-child { margin-right: 0; }
 .tile-index {
   font-family: var(--font-mono); font-size: 22px; letter-spacing: 0.18em;
-  color: var(--gold);
+  color: var(--label);
 }
 .tile-icon {
   position: absolute; right: 22px; top: 20px;
@@ -180,37 +218,40 @@ html.ambient .bg-layer.on { opacity: 0.55; }
 .tile-label {
   font-family: var(--font-head); font-weight: 700;
   font-size: 40px; line-height: 1.0; letter-spacing: -0.015em;
-  color: var(--cream);
+  color: var(--text);
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 .tile-label.long { font-size: 30px; letter-spacing: -0.01em; padding-bottom: 4px; }
-.tile-rule { height: 2px; width: 44px; background: rgba(208, 216, 224, 0.35); margin-top: 16px; transition: width 200ms var(--ease-out), background-color 200ms var(--ease-out); }
+.tile-rule { height: 2px; width: 44px; background: rgba(var(--line-rgb), 0.35); margin-top: 16px; transition: width 200ms var(--ease-out), background-color 200ms var(--ease-out); }
 
 .tile.focus {
-  border-color: var(--orange);
+  border-color: var(--accent);
   border-width: 3px; padding: 20px 24px 22px 24px;          /* keep the box the same size as the border grows */
-  background: rgba(27, 42, 74, 0.95);
+  background: rgba(var(--ground-rgb), 0.95);
   transform: translateY(-10px);
 }
-.tile.focus .tile-label { color: #FFFFFF; }
-.tile.focus .tile-rule { width: 100%; background: var(--orange); }
-.tile.focus .tile-index { color: var(--orange); }
+html.theme-orange .tile.focus { background: var(--navy); }
+.tile.focus .tile-label { color: var(--accent-text); }
+.tile.focus .tile-rule { width: 100%; background: var(--accent); }
+.tile.focus .tile-index { color: var(--accent); }
+html.theme-orange .tile.focus .tile-index { color: var(--gold); }
+html.theme-orange .tile.focus .tile-rule { background: var(--gold); }
 
 /* ---------- footer ---------- */
 #foot {
   position: absolute; left: 96px; right: 96px; bottom: 56px;
   display: flex; justify-content: space-between;
-  font-size: 20px; letter-spacing: 0.06em; color: var(--midgray);
+  font-size: 20px; letter-spacing: 0.06em; color: var(--text-muted);
 }
-#foot-left { color: var(--bluegray); }
-#credit { color: var(--bluegray); opacity: 0.85; letter-spacing: 0.02em; }
+#foot-left { color: var(--text-muted); }
+#credit { color: var(--text-muted); opacity: 0.85; letter-spacing: 0.02em; }
 
 /* ---------- toast ---------- */
 #toast {
   position: absolute; left: 50%; bottom: 330px;
   transform: translate(-50%, 12px);
   padding: 14px 26px;
-  background: var(--cream); color: var(--slate);
+  background: var(--toast-bg); color: var(--toast-text);
   font-size: 24px; font-weight: 500;
   opacity: 0; pointer-events: none;
   transition: opacity 200ms var(--ease-out), transform 200ms var(--ease-out);
@@ -221,14 +262,14 @@ html.ambient .bg-layer.on { opacity: 0.55; }
 #ambient {
   position: absolute; left: 0; top: 0; right: 0; bottom: 0;
   display: flex; flex-direction: column; align-items: center; justify-content: center;
-  background: rgba(21, 33, 59, 0.55);
-  text-shadow: 0 2px 24px rgba(21, 33, 59, 0.6);
+  background: rgba(var(--ground-deep-rgb), 0.55);
+  text-shadow: 0 2px 24px rgba(var(--ground-deep-rgb), 0.6);
   opacity: 0; pointer-events: none;
   transition: opacity 400ms var(--ease-out);
 }
-#ambient-rule { width: 72px; height: 2px; background: var(--gold); margin-bottom: 48px; }
-#ambient-time { font-weight: 700; font-size: 160px; line-height: 1; letter-spacing: -0.03em; color: var(--offwhite); font-variant-numeric: tabular-nums; }
-#ambient-date { margin-top: 18px; font-size: 32px; font-weight: 500; color: var(--bluegray); letter-spacing: 0.04em; }
+#ambient-rule { width: 72px; height: 2px; background: var(--label); margin-bottom: 48px; }
+#ambient-time { font-weight: 700; font-size: 160px; line-height: 1; letter-spacing: -0.03em; color: var(--text-strong); font-variant-numeric: tabular-nums; }
+#ambient-date { margin-top: 18px; font-size: 32px; font-weight: 500; color: var(--text-muted); letter-spacing: 0.04em; }
 html.ambient #ambient { opacity: 1; }
 html.ambient #rail, html.ambient #hero, html.ambient #dock, html.ambient #foot { opacity: 0; transition: opacity 300ms var(--ease-in); }
 
@@ -237,6 +278,7 @@ html.night #stage { opacity: 0.82; }
 
 /* ---------- reduced motion (newer engines; harmless on Tizen 4.0) ---------- */
 @media (prefers-reduced-motion: reduce) {
-  #dock-row, .tile, .tile-rule, #toast, #ambient, html.ambient #rail, html.ambient #hero, html.ambient #dock, html.ambient #foot { transition: none; }
+  #dock-row, .tile, .tile-rule, #toast, #ambient, .bg-layer, html.ambient #rail, html.ambient #hero, html.ambient #dock, html.ambient #foot { transition: none; }
   .tile.focus { transform: none; }
+  .bg-layer.drift { transform: none; }
 }

@@ -232,6 +232,8 @@
 
   function init() {
     document.documentElement.classList.add(P.isTV ? 'tv' : 'preview');
+    var theme = Q.theme || cfg.theme || 'navy';
+    if (theme !== 'navy') document.documentElement.classList.add('theme-' + theme);
     fitStage();
     window.addEventListener('resize', fitStage);
     renderClock();

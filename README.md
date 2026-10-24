@@ -4,7 +4,7 @@ A calm, type-led home screen for Samsung Tizen TVs: a clock, a numbered dock of 
 
 [![CI](https://github.com/poyfather/PNW-home/actions/workflows/ci.yml/badge.svg)](https://github.com/poyfather/PNW-home/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-1B2A4A.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/version-1.0.0-C75B12.svg)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-1.1.0-C75B12.svg)](CHANGELOG.md)
 [![Tizen 4.0+](https://img.shields.io/badge/Tizen-4.0%2B-D4952B.svg)](#compatibility)
 
 ![PNW Home on a 2018 Samsung TV](docs/screenshots/home.png)
@@ -40,6 +40,17 @@ Then on the TV: **Apps → App Settings → PNW Home → Add to Home**, and unde
 |---|---|---|
 | ![Home](docs/screenshots/home.png) | ![Dock](docs/screenshots/dock-scrolled.png) | ![Ambient](docs/screenshots/ambient.png) |
 
+## Themes
+
+Two colour themes ship in the package. Set `theme: 'navy'` or `theme: 'orange'` in `app/js/config.js`, or preview either with `?theme=orange` on the desktop.
+
+| Navy (default) | Burnt orange |
+|---|---|
+| ![Navy theme](docs/screenshots/home.png) | ![Orange theme](docs/screenshots/orange-home.png) |
+| ![Navy ambient](docs/screenshots/ambient.png) | ![Orange ambient](docs/screenshots/orange-ambient.png) |
+
+The orange theme keeps the same layout and type, swaps the ground to burnt orange with cream labels, uses navy as the single cold accent for the focused tile, and drops to anchor brown for the ambient screen.
+
 ## Remote
 
 - **Left / Right**: move along the dock
@@ -55,6 +66,7 @@ Everything lives in [`app/js/config.js`](app/js/config.js):
 |---|---|
 | `apps` | The dock, in order. Each entry lists Tizen app IDs to try, then name patterns. `icon: false` shows a type-only tile. |
 | `greetings`, `accent` | Hero copy. The greeting follows the time of day; the accent line is one short statement. |
+| `theme` | `'navy'` (default) or `'orange'` |
 | `locale`, `hour12` | Clock and date format |
 | `photos` | Backdrop on or off, manifest path, time between photos |
 | `ambient` | Idle time before the screensaver |
