@@ -1,11 +1,12 @@
 # PNW Home
 
-A calm, type-led home screen for smart TVs: a clock, a numbered dock of your apps, and rotating photos of Mount Rainier, Tacoma and the South Puget Sound. No ads, no tracking, no background service. Runs on Samsung Tizen and, from one APK, on Android TV, Google TV and Fire TV.
+A calm, type-led home screen for smart TVs: a clock, a numbered dock of your apps, and rotating photos of Mount Rainier, Tacoma and the South Puget Sound. No ads, no tracking, no background service. Runs on Samsung Tizen, LG webOS and, from one APK, on Android TV, Google TV and Fire TV.
 
 [![CI](https://github.com/poyfather/PNW-home/actions/workflows/ci.yml/badge.svg)](https://github.com/poyfather/PNW-home/actions/workflows/ci.yml)
 [![Android](https://github.com/poyfather/PNW-home/actions/workflows/android.yml/badge.svg)](https://github.com/poyfather/PNW-home/actions/workflows/android.yml)
+[![webOS](https://github.com/poyfather/PNW-home/actions/workflows/webos.yml/badge.svg)](https://github.com/poyfather/PNW-home/actions/workflows/webos.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-1B2A4A.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/version-1.2.0-C75B12.svg)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-1.3.0-C75B12.svg)](CHANGELOG.md)
 [![Tizen 4.0+](https://img.shields.io/badge/Tizen-4.0%2B-D4952B.svg)](#compatibility)
 
 ![PNW Home on a 2018 Samsung TV](docs/screenshots/home.png)
@@ -21,10 +22,11 @@ Samsung's Smart Hub puts promoted tiles and autoplaying previews between you and
 | Samsung Tizen (2018 and later) | `.wgt`, signed for your TV | Still opens Smart Hub; the TV can autorun PNW Home at power-on instead | [docs/INSTALL.md](docs/INSTALL.md) |
 | Android TV and Google TV | one `.apk` | **Can own the Home button** once the stock launcher is disabled (reversible) | [docs/ANDROID.md](docs/ANDROID.md) |
 | Fire TV | the same `.apk` | Amazon locks the launcher; opens from Your Apps | [docs/ANDROID.md](docs/ANDROID.md) |
+| LG webOS (3.0 and later) | `.ipk` via LG's Developer Mode | Always opens LG's ribbon; pin PNW Home first | [docs/WEBOS.md](docs/WEBOS.md) |
 
-The web core in `app/` is shared. The Tizen package is that folder signed; the Android build wraps it in a small Kotlin WebView shell with a bridge that lists and launches the TV's apps. LG webOS is the next target. Roku has no way for one channel to launch another, and Hisense VIDAA has no public sideloading, so neither is planned.
+The web core in `app/` is shared. The Tizen package is that folder signed; the Android build wraps it in a small Kotlin WebView shell with a bridge that lists and launches the TV's apps; the webOS package adds an `appinfo.json` and talks to LG's application manager over the Luna bus. Roku has no way for one channel to launch another, and Hisense VIDAA has no public sideloading, so neither is planned.
 
-Built and tested on a 2018 UN65NU8000 (Tizen 4.0) and the Android TV emulator (API 34).
+Built and tested on a 2018 UN65NU8000 (Tizen 4.0) and the Android TV emulator (API 34). The webOS build is packaged and its Luna code path is tested against a mock, not yet on an LG TV.
 
 ## Quick start (Samsung Tizen)
 
@@ -55,6 +57,16 @@ adb connect <TV_IP>:5555 && adb install -r dist/PnwHome-debug.apk
 ```
 
 To make the Home button open it on Android TV or Google TV, the stock launcher has to be disabled (one `adb` command, one to undo); [docs/ANDROID.md](docs/ANDROID.md) explains why and how.
+
+## Quick start (LG webOS)
+
+You need LG's Developer Mode app on the TV and the webOS CLI. [docs/WEBOS.md](docs/WEBOS.md) has the device registration steps.
+
+```sh
+npm install -g @webos-tools/cli
+webos/build.sh                            # -> dist/org.pnwhome.home_<version>_all.ipk
+webos/install.sh lgtv                     # the device name you registered with ares-setup-device
+```
 
 ## What it looks like
 
@@ -124,9 +136,10 @@ Open `http://127.0.0.1:8765/index.html`. Without the Tizen runtime the dock uses
 ```
 app/              the shared web core (index.html, css/, js/, photos/, icon.png) + the Tizen config.xml
 android/          Kotlin shell: Gradle project, MainActivity (WebView), AppBridge (list/launch apps)
+webos/            appinfo.json, LG icons, build.sh (ares-package), install.sh
 scripts/          Tizen build.sh, install.sh, tizen-env.example.sh
-docs/             INSTALL.md (Tizen), ANDROID.md, screenshots
-.github/          CI, Android build, issue forms, PR template, Dependabot
+docs/             INSTALL.md (Tizen), ANDROID.md, WEBOS.md, screenshots
+.github/          CI, Android and webOS builds, issue forms, PR template, Dependabot
 ```
 
 ## Compatibility

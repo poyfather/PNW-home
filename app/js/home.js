@@ -8,7 +8,8 @@
   var cfg = PNW.config;
   var P = PNW.platform;
   var Q = PNW.query;
-  var KEY = { LEFT: 37, UP: 38, RIGHT: 39, DOWN: 40, ENTER: 13, BACK: 10009, ESC: 27, BACKSPACE: 8 };
+  // BACK is Tizen's code, BACK_WEBOS is LG's; the Kotlin shell sends the Tizen code.
+  var KEY = { LEFT: 37, UP: 38, RIGHT: 39, DOWN: 40, ENTER: 13, BACK: 10009, BACK_WEBOS: 461, ESC: 27, BACKSPACE: 8 };
 
   function $(id) { return document.getElementById(id); }
   var ls = {
@@ -203,7 +204,7 @@
     var wasAmbient = ambientOn;
     wake();
     if (wasAmbient) { e.preventDefault(); return; }      // first press only wakes the screen
-    if (k === KEY.BACK || k === KEY.ESC || (k === KEY.BACKSPACE && cfg.preview)) {
+    if (k === KEY.BACK || k === KEY.BACK_WEBOS || k === KEY.ESC || (k === KEY.BACKSPACE && cfg.preview)) {
       e.preventDefault();                                 // at the top level Back does nothing
       return;
     }

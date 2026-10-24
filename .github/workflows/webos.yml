@@ -1,0 +1,45 @@
+name: webOS
+
+on:
+  push:
+    branches: [main]
+    paths: ["webos/**", "app/**", ".github/workflows/webos.yml"]
+  pull_request:
+    paths: ["webos/**", "app/**", ".github/workflows/webos.yml"]
+
+permissions:
+  contents: read
+
+jobs:
+  ipk:
+    name: Build IPK
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Install the webOS CLI
+        run: npm install -g @webos-tools/cli
+
+      - name: Package
+        run: webos/build.sh
+
+      - name: Check the package contents
+        run: |
+          ipk=$(ls dist/org.pnwhome.home_*.ipk | head -1)
+          mkdir -p /tmp/ipk && cd /tmp/ipk && ar x "$GITHUB_WORKSPACE/$ipk"
+          tar -tzf data.tar.gz | grep -q 'appinfo.json'
+          tar -tzf data.tar.gz | grep -q 'index.html'
+          tar -tzf data.tar.gz | grep -q 'js/platform.js'
+          tar -tzf data.tar.gz | grep -q 'photos/manifest.json'
+          ! tar -tzf data.tar.gz | grep -q 'config.xml'
+          echo "ipk ok: $ipk"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: PnwHome-webos.ipk
+          path: dist/org.pnwhome.home_*.ipk
+          retention-days: 14

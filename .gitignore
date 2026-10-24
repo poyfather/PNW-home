@@ -6,3 +6,4 @@ android/local.properties
 app/.buildResult/
 dist/
 scripts/tizen-env.sh
+webos/build/

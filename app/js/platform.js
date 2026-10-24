@@ -16,10 +16,11 @@
   var cfg = PNW.config;
   var tz = !cfg.preview && typeof window.tizen !== 'undefined' ? window.tizen : null;
   var an = !cfg.preview && typeof window.PNWAndroid !== 'undefined' ? window.PNWAndroid : null;
+  var wo = !cfg.preview && !tz && !an && typeof window.PalmServiceBridge !== 'undefined';   // LG webOS
   var P = {};
 
-  P.isTV = !!(tz || an);
-  P.platform = tz ? 'tizen' : (an ? 'android' : 'mock');
+  P.isTV = !!(tz || an || wo);
+  P.platform = tz ? 'tizen' : (an ? 'android' : (wo ? 'webos' : 'mock'));
 
   // "Disney+" -> "disney plus", "Prime Video" -> "prime video"
   function norm(name) {
@@ -132,6 +133,55 @@
     });
   }
 
+  // ---------- LG webOS (Luna service bus) ----------
+  // webOS web apps get window.PalmServiceBridge, the primitive that LG's webOSTV.js wraps.
+  // One bridge per call: set the callback, call "luna://service/method" with JSON params.
+  var APPMGR = 'luna://com.webos.applicationManager';
+  function luna(uri, method, params) {
+    return new Promise(function (resolve, reject) {
+      var bridge, done = false;
+      var timer = setTimeout(function () { if (!done) { done = true; reject(new Error('luna timeout: ' + method)); } }, 5000);
+      try {
+        bridge = new window.PalmServiceBridge();
+        bridge.onservicecallback = function (msg) {
+          if (done) return;
+          done = true; clearTimeout(timer);
+          var r;
+          try { r = JSON.parse(msg); } catch (e) { reject(new Error('luna: bad reply')); return; }
+          if (r && r.returnValue === false) reject(new Error(r.errorText || ('luna error ' + r.errorCode)));
+          else resolve(r);
+        };
+        bridge.call(uri + '/' + method, JSON.stringify(params || {}));
+      } catch (e) { done = true; clearTimeout(timer); reject(e); }
+    });
+  }
+  // listLaunchPoints returns what the LG Home ribbon shows: { id, title, icon, largeIcon, ... }.
+  // Some firmware refuses it to third-party apps; then the configured apps are shown unverified
+  // and a launch failure reports it.
+  function webosLaunchPoints() {
+    return luna(APPMGR, 'listLaunchPoints', {}).then(function (r) {
+      return (r.launchPoints || []).map(function (lp) {
+        return { id: lp.id, name: lp.title, iconPath: lp.largeIcon || lp.icon || null, show: lp.removable !== undefined ? true : true };
+      });
+    });
+  }
+  function webosResolve(defs) {
+    return webosLaunchPoints().then(function (list) {
+      return matchList(defs, list, {}, 'webos');
+    }, function () {
+      // Listing refused: trust the first configured webOS id of each entry.
+      var result = {};
+      defs.forEach(function (def) {
+        var ids = def.webos || [];
+        if (ids.length) result[def.key] = { id: ids[0], name: def.label, iconPath: null, unverified: true };
+      });
+      return result;
+    });
+  }
+  function webosLaunch(id) {
+    return luna(APPMGR, 'launch', { id: id }).then(function () { return 'webos'; });
+  }
+
   // The Kotlin shell forwards D-pad and OK presses here as synthetic key events, with the
   // keyCodes the rest of the page already understands. KeyboardEvent's constructor ignores
   // keyCode, so it is defined on the instance.
@@ -151,6 +201,7 @@
   P.resolveApps = function (defs) {
     if (tz) return tizenResolve(defs);
     if (an) return androidResolve(defs);
+    if (wo) return webosResolve(defs);
     return Promise.resolve(matchList(defs, MOCK, {}, 'ids'));
   };
 
@@ -166,6 +217,7 @@
       try { list = JSON.parse(an.listApps() || '[]'); } catch (e) { list = []; }
       return Promise.resolve(shape(list));
     }
+    if (wo) return webosLaunchPoints().then(shape, function () { return []; });
     if (tz) {
       return new Promise(function (resolve) {
         var done = false;
@@ -191,6 +243,7 @@
   P.launchApp = function (id) {
     if (tz) return tizenLaunch(id);
     if (an) return androidLaunch(id);
+    if (wo) return webosLaunch(id);
     return previewLaunch(id);
   };
 

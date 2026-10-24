@@ -1,0 +1,16 @@
+{
+  "id": "org.pnwhome.home",
+  "version": "1.3.0",
+  "vendor": "poyfather",
+  "type": "web",
+  "main": "index.html",
+  "title": "PNW Home",
+  "icon": "icon.png",
+  "largeIcon": "largeIcon.png",
+  "bgColor": "#1B2A4A",
+  "iconColor": "#1B2A4A",
+  "resolution": "1920x1080",
+  "disableBackHistoryAPI": true,
+  "handlesRelaunch": true,
+  "supportQuickStart": false
+}

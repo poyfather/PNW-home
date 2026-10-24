@@ -6,6 +6,20 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+## [1.3.0] - 2026-10-23
+
+### Added
+- LG webOS package (`webos/`): `appinfo.json`, LG icon sizes, `build.sh` (ares-package) and
+  `install.sh`; `docs/WEBOS.md` covers Developer Mode, device registration and install.
+- webOS backend in `platform.js`: lists the LG ribbon's launch points and launches apps over the
+  Luna bus using the built-in `PalmServiceBridge`, with a fallback when listing is refused.
+- Dock entries carry LG webOS app ids next to Tizen and Android ids.
+- `?webosmock=1` preview flag that fakes the Luna bridge so the webOS path can be checked on a desktop.
+- GitHub Actions job that packages the IPK and uploads it as an artifact.
+
+### Changed
+- The home screen also swallows LG's Back key (461), as it does Tizen's (10009).
+
 ## [1.2.0] - 2026-10-23
 
 ### Added
@@ -50,7 +64,8 @@ All notable changes to this project are documented here. The format follows
 - Package ID is 10 characters (`PnwHome001`), which Samsung TVs require; an 8-character ID fails to install with error 118019.
 - Tested on a 2018 UN65NU8000 (Tizen 4.0).
 
-[Unreleased]: https://github.com/poyfather/PNW-home/compare/v1.2.0...HEAD
+[Unreleased]: https://github.com/poyfather/PNW-home/compare/v1.3.0...HEAD
+[1.3.0]: https://github.com/poyfather/PNW-home/compare/v1.2.0...v1.3.0
 [1.2.0]: https://github.com/poyfather/PNW-home/compare/v1.1.0...v1.2.0
 [1.1.0]: https://github.com/poyfather/PNW-home/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/poyfather/PNW-home/releases/tag/v1.0.0

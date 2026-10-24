@@ -14,9 +14,36 @@
     try { q[decodeURIComponent(i < 0 ? kv : kv.slice(0, i))] = i < 0 ? '1' : decodeURIComponent(kv.slice(i + 1)); }
     catch (e) { /* ignore */ }
   });
+  // Dev only: ?webosmock=1 installs a fake PalmServiceBridge so the webOS code path can be
+  // exercised in a desktop browser. It answers listLaunchPoints with a small fixed list.
+  if (q.webosmock === '1' && typeof window.PalmServiceBridge === 'undefined') {
+    window.PalmServiceBridge = function () {
+      var self = this;
+      this.onservicecallback = null;
+      this.call = function (uri, params) {
+        var reply = { returnValue: false, errorText: 'mock: unknown method ' + uri };
+        if (/listLaunchPoints$/.test(uri)) {
+          reply = { returnValue: true, launchPoints: [
+            { id: 'netflix', title: 'Netflix', icon: '' },
+            { id: 'youtube.leanback.v4', title: 'YouTube', icon: '' },
+            { id: 'amazon', title: 'Prime Video', icon: '' },
+            { id: 'com.webos.app.browser', title: 'Web Browser', icon: '' },
+            { id: 'com.webos.app.livetv', title: 'Live TV', icon: '' },
+            { id: 'com.webos.app.hdmi1', title: 'HDMI 1', icon: '' }
+          ] };
+        } else if (/\/launch$/.test(uri)) {
+          reply = { returnValue: true, mock: 'launched ' + (JSON.parse(params || '{}').id || '?') };
+        }
+        setTimeout(function () { if (self.onservicecallback) self.onservicecallback(JSON.stringify(reply)); }, 60);
+      };
+    };
+    window.PNW_WEBOS_MOCK = true;
+  }
+
   var onTizen = typeof window.tizen !== 'undefined';
   var onAndroid = typeof window.PNWAndroid !== 'undefined';   // the Kotlin shell's bridge
-  var preview = (!onTizen && !onAndroid) || q.preview === '1';
+  var onWebOS = typeof window.PalmServiceBridge !== 'undefined'; // LG webOS Luna bridge
+  var preview = (!onTizen && !onAndroid && !onWebOS) || q.preview === '1';
 
   window.PNW = window.PNW || {};
   window.PNW.query = q;
@@ -58,35 +85,45 @@
     fillDock: { enabled: true, minTiles: 6, maxTiles: 12 },
 
     // `ids` are Tizen app IDs; `android` are Android package names (Android TV, Google TV
-    // and Fire TV builds of each app). Entries without a match on the current TV are skipped.
+    // and Fire TV builds of each app); `webos` are LG webOS app IDs. Entries without a match
+    // on the current TV are skipped.
     apps: [
       { key: 'youtube', label: 'YouTube', ids: ['9Ur5IzDKqV.TizenYouTube', 'com.samsung.tv.cobalt-yt'],
         android: ['com.google.android.youtube.tv', 'com.amazon.firetv.youtube'],
+        webos: ['youtube.leanback.v4'],
         names: ['^youtube$'], icon: false },
       { key: 'netflix', label: 'Netflix', ids: ['RN1MCdNq8t.Netflix', 'org.tizen.netflix-app'],
         android: ['com.netflix.ninja'],
+        webos: ['netflix'],
         names: ['^netflix$', '\\bnetflix\\b'] },
       { key: 'prime', label: 'Prime Video', ids: ['evKhCgZelL.AmazonIgnitionLauncher2', 'org.tizen.ignition'],
         android: ['com.amazon.amazonvideo.livingroom', 'com.amazon.avod', 'com.amazon.firebat'],
+        webos: ['amazon'],
         names: ['^prime video$', '^amazon prime video$'], icon: false },
       { key: 'disney', label: 'Disney+', ids: ['MCmYXNxgcu.DisneyPlus'],
         android: ['com.disney.disneyplus'],
+        webos: ['com.disney.disneyplus-prod'],
         names: ['^disney plus$', '^disney$'] },
       { key: 'hulu', label: 'Hulu', ids: ['LBUAQX1exg.Hulu'],
         android: ['com.hulu.livingroomplus', 'com.hulu.plus'],
+        webos: ['hulu'],
         names: ['^hulu$'] },
       { key: 'peacock', label: 'Peacock', ids: ['gzcc4LRFBF.Peacock'],
         android: ['com.peacocktv.peacockandroid'],
+        webos: ['com.peacocktv.peacock'],
         names: ['^peacock tv$', '^peacock$'] },
       { key: 'appletv', label: 'Apple TV', ids: ['com.samsung.tv.aria-video'],
         android: ['com.apple.atve.androidtv.appletv', 'com.apple.atve.amazon.appletv'],
+        webos: ['com.apple.appletv'],
         names: ['^apple tv$'], icon: false },
       { key: 'tvplus', label: 'Samsung TV Plus', ids: ['com.samsung.tv.tvPlusDeeplinker', 'com.samsung.tv.tvplus'],
         android: [],
+        webos: [],
         names: ['^samsung tv plus$', '^tv plus$'], icon: false },
       { key: 'browser', label: 'Internet', ids: ['org.tizen.browser'],
         android: ['com.google.android.tv.browser', 'org.mozilla.tv.firefox', 'com.amazon.cloud9'],
-        names: ['^internet$', '^browser$', '^silk browser$', '^firefox$'], icon: false }
+        webos: ['com.webos.app.browser'],
+        names: ['^internet$', '^browser$', '^web browser$', '^silk browser$', '^firefox$'], icon: false }
     ]
   };
 }());
