@@ -41,7 +41,7 @@ jobs:
           unzip -l android/app/build/outputs/apk/debug/app-debug.apk | grep -q 'assets/www/index.html'
           echo "manifest and web core ok"
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: PnwHome-debug.apk
           path: android/app/build/outputs/apk/debug/app-debug.apk
